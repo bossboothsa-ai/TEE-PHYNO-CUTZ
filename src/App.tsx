@@ -24,6 +24,20 @@ function AppRouter() {
       <Route path="/teephyno/join" element={<JoinScreen />} />
       <Route path="/teephyno/card" element={<CardScreen />} />
 
+      {/* Wall QR: scanned by new customers on entry – sends them to join flow */}
+      <Route path="/vip" element={<Navigate to="/teephyno/join?mode=member" replace />} />
+
+      {/* Member QR URL: only the staff scanner processes this.
+          If a customer accidentally opens it, redirect them to their card. */}
+      <Route
+        path="/scan/:memberId"
+        element={
+          currentMemberId
+            ? <Navigate to="/teephyno/card" replace />
+            : <Navigate to="/teephyno/join?mode=member" replace />
+        }
+      />
+
       {/* Staff Routes */}
       <Route path="/staff/teephyno" element={<StaffScreen />} />
 

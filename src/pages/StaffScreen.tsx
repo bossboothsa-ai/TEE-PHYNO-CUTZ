@@ -10,6 +10,7 @@ const StaffScreen = () => {
     const [lastScannedMember, setLastScannedMember] = useState<Member | null>(null);
     const [successMode, setSuccessMode] = useState<'visit' | 'redeem' | null>(null);
     const [stats, setStats] = useState({ members: 0, visits: 0, rewards: 0 });
+    const [scanError, setScanError] = useState<string | null>(null);
     const qrRef = useRef<Html5Qrcode | null>(null);
     const scannerId = "staff-qr-reader";
 
@@ -61,14 +62,34 @@ const StaffScreen = () => {
         setIsScanning(false);
     };
 
-    const handleScan = (memberId: string) => {
+    const handleScan = (rawText: string) => {
+        // Parse /scan/{memberId} from the scanned URL
+        let memberId: string | null = null;
+        try {
+            const url = new URL(rawText);
+            const match = url.pathname.match(/^\/scan\/(.+)/);
+            if (match) memberId = match[1];
+        } catch {
+            // rawText might not be a URL – treat as raw id for legacy
+            if (rawText.startsWith('TPC-')) memberId = rawText;
+        }
+
+        if (!memberId) {
+            // Wall QR or unrecognised code
+            stopScanning();
+            setScanError('Wrong QR type. Ask the customer to show their Member Card QR.');
+            setTimeout(() => setScanError(null), 3500);
+            return;
+        }
+
         const member = getMemberById(memberId);
         if (member) {
             stopScanning();
             setLastScannedMember(member);
         } else {
-            // Not a valid global member
-            console.warn("Invalid member scanned:", memberId);
+            stopScanning();
+            setScanError('Member not found. QR may be from a different device.');
+            setTimeout(() => setScanError(null), 3500);
         }
     };
 
@@ -159,6 +180,21 @@ const StaffScreen = () => {
                     </div>
                 </div>
             )}
+
+            {/* Scan error toast */}
+            <AnimatePresence>
+                {scanError && (
+                    <motion.div
+                        key="scan-error"
+                        initial={{ opacity: 0, y: 60 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 60 }}
+                        className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[70] bg-red-900/80 border border-red-500/40 text-red-200 text-xs uppercase tracking-widest px-6 py-4 rounded-2xl text-center max-w-xs backdrop-blur-sm shadow-xl"
+                    >
+                        {scanError}
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             <AnimatePresence>
                 {lastScannedMember && (

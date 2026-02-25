@@ -58,7 +58,7 @@ const CardScreen = () => {
 
                 <div className="bg-white p-4 rounded-2xl mb-8">
                     <QRCodeSVG
-                        value={member.id}
+                        value={`${window.location.origin}/scan/${member.id}`}
                         size={200}
                         level="H"
                         includeMargin={false}
