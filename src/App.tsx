@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import JoinScreen from './pages/JoinScreen';
 import CardScreen from './pages/CardScreen';
 import StaffScreen from './pages/StaffScreen';
-import { getAppMode, setAppMode, getCurrentMemberId } from './store';
+import { getAppMode, setAppMode, getCurrentMemberId, addMember, setCurrentMemberId } from './store';
 
 function AppRouter() {
   const [searchParams] = useSearchParams();
@@ -13,16 +13,30 @@ function AppRouter() {
     if (modeParam === 'member' || modeParam === 'staff') {
       setAppMode(modeParam);
     }
+
+    // Auto-create test member for demonstration purposes
+    const testMemberId = getCurrentMemberId();
+    if (!testMemberId) {
+      const testMember = addMember('Yolanda', '123-456-7890', '');
+      setCurrentMemberId(testMember.id);
+      console.log('Test member created:', testMember);
+    } else {
+      console.log('Existing member found:', testMemberId);
+    }
   }, [modeParam]);
 
   const currentMemberId = getCurrentMemberId();
   const savedMode = getAppMode();
 
+
   return (
     <Routes>
       {/* Customer Routes */}
-      <Route path="/teephyno/join" element={<JoinScreen />} />
+      <Route path="/teephyno/join" element={currentMemberId ? <Navigate to="/teephyno/card" replace /> : <JoinScreen />} />
       <Route path="/teephyno/card" element={<CardScreen />} />
+
+      {/* Staff Route - Always show StaffScreen, no redirects */}
+      <Route path="/teephyno/staff" element={<StaffScreen />} />
 
       {/* Wall QR: scanned by new customers on entry – sends them to join flow */}
       <Route path="/vip" element={<Navigate to="/teephyno/join?mode=member" replace />} />
@@ -38,13 +52,10 @@ function AppRouter() {
         }
       />
 
-      {/* Staff Routes */}
-      <Route path="/staff/teephyno" element={<StaffScreen />} />
-
       {/* Default Redirection */}
       <Route path="/" element={
         savedMode === 'staff' ? (
-          <Navigate to="/staff/teephyno" replace />
+          <Navigate to="/teephyno/staff" replace />
         ) : currentMemberId ? (
           <Navigate to="/teephyno/card" replace />
         ) : (

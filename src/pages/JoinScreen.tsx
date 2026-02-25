@@ -7,8 +7,8 @@ import { motion } from 'framer-motion';
 const JoinScreen = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
-        name: '',
-        phone: '',
+        name: 'Yolanda',
+        phone: '123-456-7890',
         dob: ''
     });
 

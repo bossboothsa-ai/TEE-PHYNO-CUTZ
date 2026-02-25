@@ -8,6 +8,10 @@ export interface Member {
   createdAt: number;
 }
 
+// Force salon context
+export const APP_CONTEXT = "SALON";
+export const BUSINESS_ID = "teephyno";
+
 export const STORAGE_KEYS = {
   MEMBERS: 'tee_phyno_members',
   CURRENT_MEMBER_ID: 'tee_phyno_current_member_id',
