@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate, useSearchParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import JoinScreen from './pages/JoinScreen';
 import CardScreen from './pages/CardScreen';
 import StaffScreen from './pages/StaffScreen';

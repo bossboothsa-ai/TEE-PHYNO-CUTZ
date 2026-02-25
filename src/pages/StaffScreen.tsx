@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { Html5Qrcode } from 'html5-qrcode';
-import { getMemberById, updateVisit, redeemReward, getMembers, Member } from '../store';
+import { getMemberById, updateVisit, redeemReward, getMembers } from '../store';
+import type { Member } from '../store';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Scan, Users, Scissors, Star, CheckCircle2, ArrowLeft } from 'lucide-react';
 

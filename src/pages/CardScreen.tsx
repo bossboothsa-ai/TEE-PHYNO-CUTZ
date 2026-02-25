@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getCurrentMemberId, getMemberById, Member } from '../store';
+import { getCurrentMemberId, getMemberById } from '../store';
+import type { Member } from '../store';
 import { QRCodeSVG } from 'qrcode.react';
 import { motion } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
